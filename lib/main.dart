@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-void main() {
+import 'package:webview_flutter/webview_flutter.dart';
+
+void main() { 
   runApp(
     MaterialApp(
       initialRoute: "splash",
@@ -49,7 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 class FirstPage extends StatelessWidget {
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
+
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.purple[300],
@@ -63,11 +68,13 @@ class FirstPage extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              color: Colors.pink[200],
-              child: Text(
-                "Stream will run here",
-                textAlign: TextAlign.center,
+              child: WebView(
+                initialUrl: "https://google.com",
+                onWebViewCreated: (WebViewController webViewController ){
+                  _controller.complete(webViewController);
+                },
               ),
+
             ),
           ),
           Row(
@@ -129,6 +136,7 @@ class FirstPage extends StatelessWidget {
 }
 
 class SecondPage extends StatelessWidget {
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,7 +146,14 @@ class SecondPage extends StatelessWidget {
         title: Text("Automatic Mode"),
         centerTitle: true,
       ),
-      body: Container(child: Center(child: Text("yahan stream hoyegi"))),
+      body: Container(
+        child:WebView(
+                initialUrl: "   ",
+                onWebViewCreated: (WebViewController webViewController ){
+                  _controller.complete(webViewController);
+                },
+              ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context);
