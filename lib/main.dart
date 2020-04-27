@@ -3,7 +3,28 @@ import 'dart:async';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
-void main() { 
+import 'package:http/http.dart';
+
+_makePostRequest(String command) async {
+  // set up POST request arguments
+  String url = 'http://aquabin.herokuapp.com/put';
+  Map<String, String> headers = {"Content-type": "application/json"};
+  String json = '{"command":$command}';
+  // make POST request
+  //Response response = await post(url, headers: headers, body: json);
+  Response response = await post(url, body: json);
+  // check the status code for the result
+  int statusCode = response.statusCode;
+  // this API passes back the id of the new item added to the body
+  String body = response.body;
+  // {
+  //   "title": "Hello",
+  //   "body": "body text",
+  //   "userId": 1,
+  //   "id": 101
+  // }
+}
+void main() {
   runApp(
     MaterialApp(
       initialRoute: "splash",
@@ -45,16 +66,20 @@ class _SplashScreenState extends State<SplashScreen> {
               size: 50.0,
             ),
           ),
-        )
-        );
+        ));
   }
 }
 
-class FirstPage extends StatelessWidget {
-  final Completer<WebViewController> _controller = Completer<WebViewController>();
+class FirstPage extends StatefulWidget {
+  @override
+  _FirstPageState createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
 
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.purple[300],
@@ -69,12 +94,11 @@ class FirstPage extends StatelessWidget {
           Expanded(
             child: Container(
               child: WebView(
-                initialUrl: "https://google.com",
-                onWebViewCreated: (WebViewController webViewController ){
+                initialUrl: "http://google.com",
+                onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
                 },
               ),
-
             ),
           ),
           Row(
@@ -82,10 +106,20 @@ class FirstPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: IconButton(
-                    iconSize: 20,
-                    onPressed: null,
-                    icon: Icon(Icons.arrow_drop_up)),
+                child: GestureDetector(
+                  onLongPress: () {
+                    _makePostRequest("up");
+                    print("up");
+                  },
+                  onLongPressUp: () {
+                    _makePostRequest("stop");
+                    print("up click karra tha");
+                  },
+                  child: IconButton(
+                      iconSize: 20,
+                      onPressed: null,
+                      icon: Icon(Icons.arrow_drop_up)),
+                ),
               ),
             ],
           ),
@@ -94,17 +128,33 @@ class FirstPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: IconButton(
-                  iconSize: 20,
-                  onPressed: null,
-                  icon: Icon(Icons.arrow_left),
+                child: GestureDetector(
+                  onLongPress: () {
+                    _makePostRequest("left");
+                  },
+                  onLongPressUp: () {
+                    _makePostRequest("stop");
+                  },
+                  child: IconButton(
+                    iconSize: 20,
+                    onPressed: null,
+                    icon: Icon(Icons.arrow_left),
+                  ),
                 ),
               ),
               Container(
-                child: IconButton(
-                  iconSize: 20,
-                  onPressed: null,
-                  icon: Icon(Icons.arrow_right),
+                child: GestureDetector(
+                  onLongPress: () {
+                    _makePostRequest("right");
+                  },
+                  onLongPressUp: () {
+                    _makePostRequest("stop");
+                  },
+                  child: IconButton(
+                    iconSize: 20,
+                    onPressed: null,
+                    icon: Icon(Icons.arrow_right),
+                  ),
                 ),
               ),
             ],
@@ -114,10 +164,18 @@ class FirstPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: IconButton(
-                    iconSize: 20,
-                    onPressed: null,
-                    icon: Icon(Icons.arrow_drop_down)),
+                child: GestureDetector(
+                  onLongPress: () {
+                    _makePostRequest("down");
+                  },
+                  onLongPressUp: () {
+                    _makePostRequest("stop");
+                  },
+                  child: IconButton(
+                      iconSize: 20,
+                      onPressed: null,
+                      icon: Icon(Icons.arrow_drop_down)),
+                ),
               ),
             ],
           ),
@@ -135,8 +193,15 @@ class FirstPage extends StatelessWidget {
   }
 }
 
-class SecondPage extends StatelessWidget {
-  final Completer<WebViewController> _controller = Completer<WebViewController>();
+class SecondPage extends StatefulWidget {
+  @override
+  _SecondPageState createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,12 +212,12 @@ class SecondPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        child:WebView(
-                initialUrl: "   ",
-                onWebViewCreated: (WebViewController webViewController ){
-                  _controller.complete(webViewController);
-                },
-              ),
+        child: WebView(
+          initialUrl: "http://google.com",
+          onWebViewCreated: (WebViewController webViewController) {
+            _controller.complete(webViewController);
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
