@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:webview_flutter/webview_flutter.dart';
-
 import 'package:http/http.dart';
 
 _makePostRequest(String command) async {
   // set up POST request arguments
   String url = 'http://aquabin.herokuapp.com/put';
-  Map<String, String> headers = {"Content-type": "application/json"};
-  String json = '{"command":$command}';
+  Map<String,String> headers = {'Content-Type': 'application/json'};
+  String json = '{"command": "$command"}';
+  //String json ='{"command":"$command"}';
   // make POST request
-  //Response response = await post(url, headers: headers, body: json);
-  Response response = await post(url, body: json);
+  Response response = await post(url,headers: headers, body: json);
+  //Response response = await post(url, body: json);
   // check the status code for the result
   int statusCode = response.statusCode;
+  // print (json);
+  // print(statusCode);
   // this API passes back the id of the new item added to the body
-  String body = response.body;
+  // String body = response.body;
+
   // {
   //   "title": "Hello",
   //   "body": "body text",
@@ -93,12 +95,13 @@ class _FirstPageState extends State<FirstPage> {
         children: <Widget>[
           Expanded(
             child: Container(
-              child: WebView(
-                initialUrl: "http://google.com",
-                onWebViewCreated: (WebViewController webViewController) {
-                  _controller.complete(webViewController);
-                },
-              ),
+              color: Colors.pink[200],
+              // child: WebView(
+              //   initialUrl: "http://google.com",
+              //   onWebViewCreated: (WebViewController webViewController) {
+              //     _controller.complete(webViewController);
+              //   },
+              // ),
             ),
           ),
           Row(
@@ -107,13 +110,13 @@ class _FirstPageState extends State<FirstPage> {
             children: <Widget>[
               Container(
                 child: GestureDetector(
-                  onLongPress: () {
+                  onLongPress: () async  {
                     _makePostRequest("up");
-                    print("up");
+                    // print("up");
                   },
-                  onLongPressUp: () {
+                  onLongPressUp: () async {
                     _makePostRequest("stop");
-                    print("up click karra tha");
+                    // print("up click karra tha");
                   },
                   child: IconButton(
                       iconSize: 20,
@@ -183,6 +186,7 @@ class _FirstPageState extends State<FirstPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _makePostRequest("toggle");
           Navigator.pushNamed(context, "second");
         },
         child: Text("Mode"),
@@ -212,15 +216,16 @@ class _SecondPageState extends State<SecondPage> {
         centerTitle: true,
       ),
       body: Container(
-        child: WebView(
-          initialUrl: "http://google.com",
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-        ),
+        // child: WebView(
+        //   initialUrl: "http://google.com",
+        //   onWebViewCreated: (WebViewController webViewController) {
+        //     _controller.complete(webViewController);
+        //   },
+        // ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _makePostRequest("toggle");
           Navigator.pop(context);
         },
         child: Text("Mode"),
